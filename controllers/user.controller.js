@@ -1,18 +1,94 @@
-const User = require("../models/user.model");
+const UserInit = require("../models/User");
 const bcrypt = require("bcryptjs");
+const { Sequelize, Model } = require('sequelize');
+
+const sequelize = new Sequelize('mysql://root:12345@127.0.0.1:3306/signup')
+var User
+
+
+setTimeout(async()=> { 
+   User = UserInit(sequelize)
+   await User.sync({ force: true }); 
+    console.log("Database initialized")
+    await sequelize.authenticate();
+
+}, 100)
+
+/*
+express --> routes (he checked) --> ethu request --> ethu controller
+
+brower -----> text(header, body, cookie, url) ---> server(express) ---> (req, res) ---> usercpontroller ---> {
+  custom logic
+
+
+}
+*/
+
 
 exports.register = async (req, res) => {
   try {
-    console.log("ALERT")
+    console.log("Request is ===> ", req.body)
+
+    reqBody = req.body
+    const firstName = reqBody.firstName;
+    const lastName =  reqBody.lastName;
+    const email =  reqBody.email;
+    const companyName =  reqBody.companyName;
+    const password =  reqBody.password;
+
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const user = await User.create({
-      name: req.body.name,
-      email: req.body.email,
-      company: req.body.company,
-      password: hashedPassword
-    });
-    res.status(201).send(user);
+    
+    parameterObject = {
+      "companyName" : companyName,
+      "firstName" : firstName,
+      "lastName" : lastName,
+      "password" : hashedPassword,
+      "emailId" : email
+    }
+
+    saveUser(parameterObject)
+  
+    res.status(201).send(parameterObject);
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
 };
+
+// Move this to new file
+exports.getAllUser = async (req, res) => {
+  try {
+    const users = await User.findAll();
+    res.status(200).send(users);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
+exports.login  = async (req, res) => {  
+  try {
+    console.log("Request is ===> ", req.body)
+     const username =req.body.username
+     const password= req.body.password
+     const hashedPassword = await bcrypt.hash(req.body.password, 10);
+     const userindb = await User.findOne({ where: { emailId: username, password: hashedPassword } });
+     if (userindb === null) { 
+      res.status(401).send({"status":"Login failed"});
+       
+     }
+       else{
+        res.status(200).send({"status":"Login success"});
+       }
+    
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
+
+async function saveUser(userData){
+  console.log(`Model created ${User}`)
+  
+  const user = User.build(userData);
+  user.save()
+}
+
