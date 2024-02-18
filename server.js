@@ -3,6 +3,10 @@ const express = require('express');
 const app = express();
 const port = 3006;
 const bodyParser = require('body-parser')
+const cors = require('cors');
+
+app.use(cors({
+    origin: '*'}));
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
