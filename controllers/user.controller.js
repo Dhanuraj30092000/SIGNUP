@@ -1,30 +1,20 @@
 const UserInit = require("../models/User");
 const bcrypt = require("bcryptjs");
 const { Sequelize, Model } = require('sequelize');
+const jwt = require('jsonwebtoken');
+const verifyToken = require('../middleware/authentication.middleware');
 
-
-//const sequelize = new Sequelize('mysql://root:12345@127.0.0.1:3306/signup')
-const sequelize = new Sequelize('sqlite::memory:')
+//const sequelize = new Sequelize('sqlite::memory:') //TODO Change this
+const sequelize = new Sequelize('mysql://root:12345@127.0.0.1:3306/signup')
 var User
-
 
 setTimeout(async () => {
   User = UserInit(sequelize)
-  await User.sync({ force: true });
+  await User.sync({ force: false });
   console.log("Database initialized")
   await sequelize.authenticate();
 
 }, 100)
-
-/*
-express --> routes (he checked) --> ethu request --> ethu controller
-
-brower -----> text(header, body, cookie, url) ---> server(express) ---> (req, res) ---> usercpontroller ---> {
-  custom logic
-
-
-}
-*/
 
 
 exports.register = async (req, res) => {
@@ -67,6 +57,15 @@ exports.getAllUser = async (req, res) => {
 };
 
 
+exports.me = async (req, res) => {
+  try {
+    const currentUser = req.user
+    res.status(200).send(currentUser);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
 exports.login = async (req, res) => {
   try {
     console.log("Request is ===> ", req.body)
@@ -79,20 +78,28 @@ exports.login = async (req, res) => {
     } else { // User is there, now we need to check password
       const passwordMatched = comparePassword(plainTextPassword, userindb.password)
       if (passwordMatched) {
+        const token = jwt.sign(JSON.stringify(userindb), 'iam a secret key', {
+          expiresIn: '48h',
+        });
         res.status(200).send({
           "status": "Login success",
+          "token": token,
           "message": "Use token in subsequent requests"
         });
       } else {
+         
         res.status(401).send({ "status": "Login failure" });
       }
     }
 
   } catch (error) {
+    console.log(error)
     res.status(500).send({ message: error.message });
   }
 };
 
+
+// All utility functions should be here, below
 
 async function saveUser(userData) {
   console.log(`Model created ${User}`)
@@ -101,7 +108,16 @@ async function saveUser(userData) {
   user.save()
 }
 
+
 async function comparePassword(plaintextPassword, hash) {
   const result = await bcrypt.compare(plaintextPassword, hash);
   return result;
 }
+
+
+
+
+
+
+
+
