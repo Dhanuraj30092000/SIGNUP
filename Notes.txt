@@ -1,0 +1,100 @@
+
+/api/currentUser -> token 
+middleWareWare
+-> Controller.code {
+    user = req.user
+    response.send(user)
+}
+
+
+
+
+
+
+
+
+
+
+
+Chrome/postman -> Creates HTTP1.1 hostname port /path POST header{contentType: "application/json"} body{ "emil" : "", "password" : "password"}
+-> 3006
+Node --> Controll flows --> express -->
+
+ --> controller 
+
+Our logic works
+
+-> Express with response -> Node ---> OS -> Postman
+Login
+jwt(User) ===  hfdishfldkfhkdslhflks
+
+midle
+var a = decode(hfdishfldkfhkdslhflks) --> User
+a.id
+
+
+
+
+
+
+
+
+
+
+
+
+Adyam Request -> HTTP 1.1 hostname.com port path /api/user POST header { token=tokenvalue, cookie = header }
+body 
+{
+
+}
+
+-> Server : 8006
+
+----------
+80
+81
+82
+...
+...
+----------
+... 
+..  OS Reserved
+..
+----------
+
+
+end
+
+
+Exprese 
+-> Validate all the codes required for its functioning  
+-> starts listneing to port 3006 
+-> Node VM gets the request & tranfers to controller
+
+-> Controller
+Creates a response Object
+-> Express takes the object 
+-> Node
+-> OS
+
+
+
+
+Program   --- Read(File)    --- port.listen (3000)
+|
+Program VM --- Windows, linux calls --- call kernel to 
+|
+OS -- 3000 
+|
+Computer
+
+
+source port -> destination port
+Reusets --> Chrome 3000, 8000 -> Server 3006
+Response --> Server 890 -> 8000
+
+
+
+
+

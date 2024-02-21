@@ -26,6 +26,11 @@ const dwRoutes = require("./routes/dw.router");
 app.use("/api", userRoutes) 
 app.use("/resources", dwRoutes) 
 
+app.use(function(err, req, res, next) { 
+    console.error(err.stack);
+    res.status(500).send(`Something has gone wrong!! Our Engineers are on it. A retry might work`);
+});
+
 app.listen(port, async () => {
     console.log(`Server is listening at http://localhost:${port}`);
 })

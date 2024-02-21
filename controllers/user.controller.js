@@ -4,8 +4,8 @@ const { Sequelize, Model } = require('sequelize');
 const jwt = require('jsonwebtoken');
 const verifyToken = require('../middleware/authentication.middleware');
 
-//const sequelize = new Sequelize('sqlite::memory:') //TODO Change this
-const sequelize = new Sequelize('mysql://root:12345@127.0.0.1:3306/signup')
+const sequelize = new Sequelize('sqlite::memory:') //TODO Change this
+//const sequelize = new Sequelize('mysql://root:12345@127.0.0.1:3306/signup')
 var User
 
 setTimeout(async () => {
@@ -62,9 +62,10 @@ exports.me = async (req, res) => {
     const currentUser = req.user
     res.status(200).send(currentUser);
   } catch (error) {
-    res.status(500).send({ message: error.message });
+    res.status(500).send({ "message" : error.message });
   }
 };
+
 
 exports.login = async (req, res) => {
   try {
@@ -78,8 +79,13 @@ exports.login = async (req, res) => {
     } else { // User is there, now we need to check password
       const passwordMatched = comparePassword(plainTextPassword, userindb.password)
       if (passwordMatched) {
-        const token = jwt.sign(JSON.stringify(userindb), 'iam a secret key', {
-          expiresIn: '48h',
+        const token = jwt.sign(userindb.toJSON(), 'iam a secret key', { 
+
+          /* Jwt.sign requires the object that is passed to be serialisable,
+           Mongoose User object is not serialisable, 
+          but if you call userInDb.toJSON() then mongoose will return a serialisable version */
+
+          expiresIn: '48h'
         });
         res.status(200).send({
           "status": "Login success",
