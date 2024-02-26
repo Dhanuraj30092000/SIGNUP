@@ -22,10 +22,11 @@ const UserInit = require("./models/User");
 
 const userRoutes = require("./routes/user.routes");
 const dwRoutes = require("./routes/dw.router");
+const ETLRoutes = require("./routes/ETL.router");
 
 app.use("/api", userRoutes) 
 app.use("/resources", dwRoutes) 
-
+app.use("/resources",ETLRoutes )
 app.use(function(err, req, res, next) { 
     console.error(err.stack);
     res.status(500).send(`Something has gone wrong!! Our Engineers are on it. A retry might work`);

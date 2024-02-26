@@ -4,8 +4,8 @@ const { Sequelize, Model } = require('sequelize');
 const jwt = require('jsonwebtoken');
 const verifyToken = require('../middleware/authentication.middleware');
 
-const sequelize = new Sequelize('sqlite::memory:') //TODO Change this
-//const sequelize = new Sequelize('mysql://root:12345@127.0.0.1:3306/signup')
+//const sequelize = new Sequelize('sqlite::memory:') //TODO Change this
+const sequelize = new Sequelize('mysql://root:12345@127.0.0.1:3306/signup')
 var User
 
 setTimeout(async () => {
